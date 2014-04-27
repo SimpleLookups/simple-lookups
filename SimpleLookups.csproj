@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{08CB719C-E417-4D55-A7E3-270829EB48FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SimpleLookups</RootNamespace>
+    <AssemblyName>SimpleLookups</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\DeleteMultipleByCodeLookupCommand.cs" />
+    <Compile Include="Commands\DeleteMultipleByIdLookupCommand.cs" />
+    <Compile Include="Commands\DeleteSingleByCodeLookupCommand.cs" />
+    <Compile Include="Commands\DeleteSingleByIdLookupCommand.cs" />
+    <Compile Include="Commands\InsertLookupCommand.cs" />
+    <Compile Include="Commands\Interfaces\ILookupCommand.cs" />
+    <Compile Include="Commands\LookupCommand.cs" />
+    <Compile Include="Commands\SelectAllLookupCommand.cs" />
+    <Compile Include="Commands\SelectLookupCommand.cs" />
+    <Compile Include="Commands\SelectMultipleByCodeLookupCommand.cs" />
+    <Compile Include="Commands\SelectMultipleByIdLookupCommand.cs" />
+    <Compile Include="Commands\SelectSingleByCodeLookupCommand.cs" />
+    <Compile Include="Commands\SelectSingleByIdLookupCommand.cs" />
+    <Compile Include="Commands\SqlServer\DeleteMultipleByCodeSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\DeleteMultipleByIdSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\DeleteSingleByCodeSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\DeleteSingleByIdSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\InsertSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\Interfaces\ISqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SelectMultipleActiveSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SelectMultipleAllSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SelectMultipleByCodeSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SelectMultipleByIdSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SelectSingleByCodeSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SelectSingleByIdSqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\SqlStatement.cs" />
+    <Compile Include="Commands\SqlServer\UpdateSqlStatement.cs" />
+    <Compile Include="Commands\UpdateLookupCommand.cs" />
+    <Compile Include="Configuration\ConnectionStringConfigurationElement.cs" />
+    <Compile Include="Configuration\ConnectionStringsConfigurationElementCollection.cs" />
+    <Compile Include="Configuration\Interfaces\IConnectionStringConfigurationElement.cs" />
+    <Compile Include="Configuration\Interfaces\IConnectionStringsConfigurationElementCollection.cs" />
+    <Compile Include="Configuration\Interfaces\ISimpleLookupsConfiguration.cs" />
+    <Compile Include="Configuration\Interfaces\ISimpleLookupsConfigurationSection.cs" />
+    <Compile Include="Configuration\SimpleLookupsConfiguration.cs" />
+    <Compile Include="Configuration\SimpleLookupsConfigurationSection.cs" />
+    <Compile Include="Exceptions\SimpleLookupsException.cs" />
+    <Compile Include="Execution\CommandExecutor.cs" />
+    <Compile Include="Execution\Interfaces\ICommandExecutor.cs" />
+    <Compile Include="Lookup.cs" />
+    <Compile Include="LookupManager.cs" />
+    <Compile Include="Interfaces\ILookup.cs" />
+    <Compile Include="SimpleLookups.cs" />
+    <Compile Include="Interfaces\ILookupManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
