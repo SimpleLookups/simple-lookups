@@ -24,8 +24,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using SimpleLookups.Commands.Interfaces;
-
 namespace SimpleLookups.Execution.Interfaces
 {
     /// <summary>
@@ -36,9 +34,8 @@ namespace SimpleLookups.Execution.Interfaces
         /// <summary>
         /// Executes a command against the database.
         /// </summary>
-        /// <param name="command">Command to execute in this context.</param>
         /// <param name="connectionName">The name of the connection string.</param>
         /// <returns>A boolean indicating success.</returns>
-        bool ExecuteCommand(ILookupCommand command, string connectionName);
+        bool ExecuteCommand(string connectionName);
     }
 }

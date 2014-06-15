@@ -24,11 +24,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
+using SimpleLookups.Commands.Interfaces;
 using System.Collections.Generic;
 using System.Data;
-using System.Text;
-using SimpleLookups.Commands.Interfaces;
 using System.Data.Common;
+using System.Text;
 
 namespace SimpleLookups.Commands
 {

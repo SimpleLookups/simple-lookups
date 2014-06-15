@@ -34,7 +34,7 @@ namespace SimpleLookups.Commands
 {
     internal class SelectMultipleByIdLookupCommand<T> : SelectLookupCommand<T> where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _selectByIdsStatement = new SelectMultipleByIdSqlStatement<T>();
+        private readonly ISqlStatement _sqlStatement;
         private readonly IList<int> _idsToSelect;
 
         public readonly IList<T> Result;
@@ -44,6 +44,8 @@ namespace SimpleLookups.Commands
         {
             _idsToSelect = ids;
             Result = new List<T>();
+
+            _sqlStatement = new SelectMultipleByIdSqlStatement<T>();
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = string.Format(_selectByIdsStatement.GetQuery(),
+            command.CommandText = string.Format(_sqlStatement.GetQuery(),
                                                 GenerateCsvParameterNameString(_idsToSelect.Count, "Id"));
 
             AddIdParameterValues(command, _idsToSelect);

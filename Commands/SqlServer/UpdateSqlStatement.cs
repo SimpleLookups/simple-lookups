@@ -30,7 +30,7 @@ namespace SimpleLookups.Commands.SqlServer
     {
         internal UpdateSqlStatement()
         {
-            QueryFormat = "UPDATE {0} SET {0}Name = @Name, {0}Code = @Code, {0}Description = @Description, Active = @Active WHERE {0}Id = @Id";
+            QueryFormat = "UPDATE {0} SET {1}[[Name]] = @Name, {1}[[Code]] = @Code, {1}[[Description]] = @Description, [[Active]] = @Active WHERE {1}[[Id]] = @Id";
         }
     }
 }

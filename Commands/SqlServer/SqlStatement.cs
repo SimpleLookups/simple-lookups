@@ -35,7 +35,15 @@ namespace SimpleLookups.Commands.SqlServer
 
         public string GetQuery()
         {
-            return string.Format(QueryFormat, TableName);
+            var queryFormatWithColumns =
+                QueryFormat.Replace("[[Id]]", SimpleLookups.Configuration.IdColumnSuffix)
+                           .Replace("[[Name]]", SimpleLookups.Configuration.NameColumnSuffix)
+                           .Replace("[[Code]]", SimpleLookups.Configuration.CodeColumnSuffix)
+                           .Replace("[[Description]]", SimpleLookups.Configuration.DescriptionColumnSuffix)
+                           .Replace("[[Active]]", SimpleLookups.Configuration.ActiveColumnName);
+
+            return string.Format(queryFormatWithColumns, TableName,
+                                 SimpleLookups.Configuration.PrefixColumnsWithTableName ? TableName : string.Empty);
         }
     }
 }

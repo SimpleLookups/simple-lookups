@@ -30,7 +30,7 @@ namespace SimpleLookups.Commands.SqlServer
     {
         internal DeleteMultipleByCodeSqlStatement()
         {
-            QueryFormat = "DELETE FROM {0} WHERE {0}Code IN ({{0}})";
+            QueryFormat = "DELETE FROM {0} WHERE {1}[[Code]] IN ({{0}})";
         }
     }
 }

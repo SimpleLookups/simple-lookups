@@ -30,7 +30,7 @@ namespace SimpleLookups.Commands.SqlServer
     {
         internal InsertSqlStatement()
         {
-            QueryFormat = "INSERT INTO {0} ({0}Name, {0}Code, {0}Description, Active) VALUES (@Name, @Code, @Description, @Active)";
+            QueryFormat = "INSERT INTO {0} ({1}[[Name]], {1}[[Code]], {1}[[Description]], [[Active]]) VALUES (@Name, @Code, @Description, @Active)";
         }
     }
 }

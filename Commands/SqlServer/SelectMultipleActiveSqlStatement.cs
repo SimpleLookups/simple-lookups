@@ -30,7 +30,7 @@ namespace SimpleLookups.Commands.SqlServer
     {
         internal SelectMultipleActiveSqlStatement()
         {
-            QueryFormat = "SELECT {0}Id, {0}Name, {0}Code, {0}Description, Active FROM {0} WHERE Active = 1";
+            QueryFormat = "SELECT {1}[[Id]], {1}[[Name]], {1}[[Code]], {1}[[Description]], [[Active]] FROM {0} WHERE [[Active]] = 1";
         }
     }
 }

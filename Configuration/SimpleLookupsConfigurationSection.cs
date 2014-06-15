@@ -57,6 +57,66 @@ namespace SimpleLookups.Configuration
         }
 
         /// <summary>
+        /// Id Column Suffix
+        /// </summary>
+        [ConfigurationProperty("idColumnSuffix", IsRequired = false, DefaultValue = "Id")]
+        public string IdColumnSuffix
+        {
+            get { return (string)base["idColumnSuffix"]; }
+            set { base["idColumnSuffix"] = value; }
+        }
+
+        /// <summary>
+        /// Name Column Suffix
+        /// </summary>
+        [ConfigurationProperty("nameColumnSuffix", IsRequired = false, DefaultValue = "Name")]
+        public string NameColumnSuffix
+        {
+            get { return (string)base["nameColumnSuffix"]; }
+            set { base["nameColumnSuffix"] = value; }
+        }
+
+        /// <summary>
+        /// Description Column Suffix
+        /// </summary>
+        [ConfigurationProperty("descriptionColumnSuffix", IsRequired = false, DefaultValue = "Description")]
+        public string DescriptionColumnSuffix
+        {
+            get { return (string)base["descriptionColumnSuffix"]; }
+            set { base["descriptionColumnSuffix"] = value; }
+        }
+
+        /// <summary>
+        /// Code Column Suffix
+        /// </summary>
+        [ConfigurationProperty("codeColumnSuffix", IsRequired = false, DefaultValue = "Code")]
+        public string CodeColumnSuffix
+        {
+            get { return (string)base["codeColumnSuffix"]; }
+            set { base["codeColumnSuffix"] = value; }
+        }
+
+        /// <summary>
+        /// Active Column Name
+        /// </summary>
+        [ConfigurationProperty("activeColumnName", IsRequired = false, DefaultValue = "Active")]
+        public string ActiveColumnName
+        {
+            get { return (string)base["activeColumnName"]; }
+            set { base["activeColumnName"] = value; }
+        }
+        
+        /// <summary>
+        /// A bool indicating whether the column names will be prefixed with the table name. (not including Active column)
+        /// </summary>
+        [ConfigurationProperty("prefixColumnsWithTableName", IsRequired = false, DefaultValue = true)]
+        public bool PrefixColumnsWithTableName
+        {
+            get { return (bool)base["prefixColumnsWithTableName"]; }
+            set { base["prefixColumnsWithTableName"] = value; }
+        }
+
+        /// <summary>
         /// The collection of connection string objects.
         /// </summary>
         [ConfigurationProperty("connectionStrings", IsRequired = true)]

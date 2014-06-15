@@ -25,52 +25,15 @@
 //
 
 using SimpleLookups.Commands.SqlServer;
-using SimpleLookups.Commands.SqlServer.Interfaces;
 using SimpleLookups.Interfaces;
-using System.Collections.Generic;
-using System.Data.Common;
 
 namespace SimpleLookups.Commands
 {
-    internal class SelectAllLookupCommand<T> : SelectLookupCommand<T> where T : class, ILookup, new()
+    internal class SelectAllLookupCommand<T> : SelectWithoutArgumentLookupCommand<T> where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _selectActiveStatement = new SelectMultipleActiveSqlStatement<T>();
-        private readonly ISqlStatement _selectAllStatement = new SelectMultipleAllSqlStatement<T>();
-        private readonly bool _activeOnly;
-
-        public readonly IList<T> Result;
-
-        internal SelectAllLookupCommand(bool activeOnly)
-            : base("Select")
+        internal SelectAllLookupCommand()
+            : base(new SelectMultipleAllSqlStatement<T>())
         {
-            _activeOnly = activeOnly;
-            Result = new List<T>();
-        }
-
-        /// <summary>
-        /// Executes the command.
-        /// </summary>
-        /// <param name="connection">The connection to execute on.</param>
-        /// <returns>A boolean indicating success.</returns>
-        public override bool Execute(DbConnection connection)
-        {
-            var command = connection.CreateCommand();
-
-            command.CommandText = _activeOnly ? _selectActiveStatement.GetQuery() : _selectAllStatement.GetQuery();
-
-            var reader = command.ExecuteReader();
-
-            // Convert reader into object
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    Result.Add(CreateEntityFromDataReader(reader));
-                }
-            }
-
-            reader.Close();
-            return true;
         }
     }
 }

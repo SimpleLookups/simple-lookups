@@ -34,13 +34,14 @@ namespace SimpleLookups.Commands
 {
     internal class DeleteSingleByCodeLookupCommand<T> : LookupCommand where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _deleteByCodeStatement = new DeleteSingleByCodeSqlStatement<T>();
+        private readonly ISqlStatement _sqlStatement;
         private readonly string _codeToRemove;
 
         internal DeleteSingleByCodeLookupCommand(string codeToRemove)
             : base("Delete")
         {
             _codeToRemove = codeToRemove;
+            _sqlStatement = new DeleteSingleByCodeSqlStatement<T>();
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = _deleteByCodeStatement.GetQuery();
+            command.CommandText = _sqlStatement.GetQuery();
             AddParameterToCommand(command, "Code", _codeToRemove, DbType.String);
 
             var affectedRows = command.ExecuteNonQuery();

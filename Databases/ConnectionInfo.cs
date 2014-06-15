@@ -24,40 +24,21 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using SimpleLookups.Commands.SqlServer;
-using SimpleLookups.Commands.SqlServer.Interfaces;
-using SimpleLookups.Interfaces;
-using System.Data;
-using System.Data.Common;
+using SimpleLookups.Databases.Interfaces;
 
-namespace SimpleLookups.Commands
+namespace SimpleLookups.Databases
 {
-    internal class DeleteSingleByIdLookupCommand<T> : LookupCommand where T : class, ILookup, new()
+    internal class ConnectionInfo : IConnectionInfo
     {
-        private readonly ISqlStatement _sqlStatement;
-        private readonly int _idToRemove;
-
-        internal DeleteSingleByIdLookupCommand(int idToRemove) : base("Delete")
+        internal ConnectionInfo(string connectionName, string connectionString)
         {
-            _idToRemove = idToRemove;
-            _sqlStatement = new DeleteSingleByIdSqlStatement<T>();
+            ConnectionName = connectionName;
+            ConnectionString = connectionString;
+            ProviderName = "System.Data.SqlClient";
         }
 
-        /// <summary>
-        /// Executes the command.
-        /// </summary>
-        /// <param name="connection">The connection to execute on.</param>
-        /// <returns>A boolean indicating success.</returns>
-        public override bool Execute(DbConnection connection)
-        {
-            var command = connection.CreateCommand();
-
-            command.CommandText = _sqlStatement.GetQuery();
-            AddParameterToCommand(command, "Id", _idToRemove, DbType.Int32);
-
-            var affectedRows = command.ExecuteNonQuery();
-
-            return (affectedRows > 0);
-        }
+        public string ConnectionName { get; set; }
+        public string ConnectionString { get; set; }
+        public string ProviderName { get; set; }
     }
 }

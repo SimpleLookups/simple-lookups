@@ -24,6 +24,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
+using System.Configuration;
+
 namespace SimpleLookups.Configuration.Interfaces
 {
     /// <summary>
@@ -31,6 +33,36 @@ namespace SimpleLookups.Configuration.Interfaces
     /// </summary>
     public interface ISimpleLookupsConfigurationSection
     {
+        /// <summary>
+        /// Id Column Suffix
+        /// </summary>
+        string IdColumnSuffix { get; set; }
+
+        /// <summary>
+        /// Name Column Suffix
+        /// </summary>
+        string NameColumnSuffix { get; set; }
+
+        /// <summary>
+        /// Description Column Suffix
+        /// </summary>
+        string DescriptionColumnSuffix { get; set; }
+
+        /// <summary>
+        /// Code Column Suffix
+        /// </summary>
+        string CodeColumnSuffix { get; set; }
+
+        /// <summary>
+        /// Active Column Name
+        /// </summary>
+        string ActiveColumnName { get; set; }
+
+        /// <summary>
+        /// A bool indicating whether the column names will be prefixed with the table name. (not including Active column)
+        /// </summary>
+        bool PrefixColumnsWithTableName { get; set; }
+        
         /// <summary>
         /// Collection of connection strings.
         /// </summary>

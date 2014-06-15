@@ -34,12 +34,13 @@ namespace SimpleLookups.Commands
 {
     internal class InsertLookupCommand<T> : LookupCommand where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _insertStatement = new InsertSqlStatement<T>();
+        private readonly ISqlStatement _sqlStatement;
         private readonly T _lookup;
 
         internal InsertLookupCommand(T lookup) : base("Insert")
         {
             _lookup = lookup;
+            _sqlStatement = new InsertSqlStatement<T>();
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = _insertStatement.GetQuery();
+            command.CommandText = _sqlStatement.GetQuery();
 
             AddParameterToCommand(command, "Name", _lookup.Name, DbType.String);
             AddParameterToCommand(command, "Description", _lookup.Description, DbType.String);

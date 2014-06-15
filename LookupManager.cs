@@ -38,8 +38,6 @@ namespace SimpleLookups
     /// <typeparam name="T">Any class object that inherits from ILookup.</typeparam>
     public class LookupManager<T> : ILookupManager<T> where T : class, ILookup, new()
     {
-        private readonly CommandExecutor _commandExecutor = new CommandExecutor();
-        
         /// <summary>
         /// Creates a lookup value.
         /// </summary>
@@ -296,7 +294,7 @@ namespace SimpleLookups
         /// <returns>A list of the requested lookup values.</returns>
         public IList<T> Get(bool activeOnly, string connectionName)
         {
-            var command = new SelectAllLookupCommand<T>(activeOnly);
+            var command = activeOnly ? (SelectWithoutArgumentLookupCommand<T>)new SelectActiveLookupCommand<T>() : new SelectAllLookupCommand<T>();
 
             ExecuteCommand(command, connectionName);
 
@@ -305,7 +303,9 @@ namespace SimpleLookups
 
         private bool ExecuteCommand(ILookupCommand command, string connectionName)
         {
-            return _commandExecutor.ExecuteCommand(command, connectionName);
+            var commandExecutor = new CommandExecutor(command);
+
+            return commandExecutor.ExecuteCommand(connectionName);
         }
     }
 }

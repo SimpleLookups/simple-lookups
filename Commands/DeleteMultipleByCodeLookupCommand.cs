@@ -34,13 +34,14 @@ namespace SimpleLookups.Commands
 {
     internal class DeleteMultipleByCodeLookupCommand<T> : LookupCommand where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _deleteByCodesStatement = new DeleteMultipleByCodeSqlStatement<T>();
+        private readonly ISqlStatement _sqlStatement;
         private readonly IList<string> _codesToRemove;
 
         internal DeleteMultipleByCodeLookupCommand(IList<string> codesToRemove)
             : base("Delete")
         {
             _codesToRemove = codesToRemove;
+            _sqlStatement = new DeleteMultipleByCodeSqlStatement<T>();
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = string.Format(_deleteByCodesStatement.GetQuery(),
+            command.CommandText = string.Format(_sqlStatement.GetQuery(),
                                                 GenerateCsvParameterNameString(_codesToRemove.Count, "Code"));
 
             AddCodeParameterValues(command, _codesToRemove);

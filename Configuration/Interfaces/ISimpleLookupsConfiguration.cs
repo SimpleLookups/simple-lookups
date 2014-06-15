@@ -24,7 +24,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using System.Collections.Generic;
+using SimpleLookups.Databases.Interfaces;
 
 namespace SimpleLookups.Configuration.Interfaces
 {
@@ -45,6 +45,13 @@ namespace SimpleLookups.Configuration.Interfaces
         /// </summary>
         /// <param name="connectionName">The name of the connection.</param>
         /// <returns>The matching connection string.</returns>
-        string GetConnectionString(string connectionName);
+        IConnectionInfo GetConnectionString(string connectionName);
+
+        string IdColumnSuffix { get; set; }
+        string NameColumnSuffix { get; set; }
+        string DescriptionColumnSuffix { get; set; }
+        string CodeColumnSuffix { get; set; }
+        string ActiveColumnName { get; set; }
+        bool PrefixColumnsWithTableName { get; set; }
     }
 }

@@ -55,12 +55,14 @@
     <Compile Include="Commands\InsertLookupCommand.cs" />
     <Compile Include="Commands\Interfaces\ILookupCommand.cs" />
     <Compile Include="Commands\LookupCommand.cs" />
+    <Compile Include="Commands\SelectActiveLookupCommand.cs" />
     <Compile Include="Commands\SelectAllLookupCommand.cs" />
     <Compile Include="Commands\SelectLookupCommand.cs" />
     <Compile Include="Commands\SelectMultipleByCodeLookupCommand.cs" />
     <Compile Include="Commands\SelectMultipleByIdLookupCommand.cs" />
     <Compile Include="Commands\SelectSingleByCodeLookupCommand.cs" />
     <Compile Include="Commands\SelectSingleByIdLookupCommand.cs" />
+    <Compile Include="Commands\SelectWithoutArgumentLookupCommand.cs" />
     <Compile Include="Commands\SqlServer\DeleteMultipleByCodeSqlStatement.cs" />
     <Compile Include="Commands\SqlServer\DeleteMultipleByIdSqlStatement.cs" />
     <Compile Include="Commands\SqlServer\DeleteSingleByCodeSqlStatement.cs" />
@@ -84,6 +86,10 @@
     <Compile Include="Configuration\Interfaces\ISimpleLookupsConfigurationSection.cs" />
     <Compile Include="Configuration\SimpleLookupsConfiguration.cs" />
     <Compile Include="Configuration\SimpleLookupsConfigurationSection.cs" />
+    <Compile Include="Databases\ConnectionFactory.cs" />
+    <Compile Include="Databases\ConnectionInfo.cs" />
+    <Compile Include="Databases\Interfaces\IConnectionFactory.cs" />
+    <Compile Include="Databases\Interfaces\IConnectionInfo.cs" />
     <Compile Include="Exceptions\SimpleLookupsException.cs" />
     <Compile Include="Execution\CommandExecutor.cs" />
     <Compile Include="Execution\Interfaces\ICommandExecutor.cs" />

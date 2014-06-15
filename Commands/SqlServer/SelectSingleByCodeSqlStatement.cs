@@ -30,7 +30,7 @@ namespace SimpleLookups.Commands.SqlServer
     {
         internal SelectSingleByCodeSqlStatement()
         {
-            QueryFormat = "SELECT {0}Id, {0}Name, {0}Code, {0}Description, Active FROM {0} WHERE {0}Code = @Code";
+            QueryFormat = "SELECT {1}[[Id]], {1}[[Name]], {1}[[Code]], {1}[[Description]], [[Active]] FROM {0} WHERE {1}[[Code]] = @Code";
         }
     }
 }

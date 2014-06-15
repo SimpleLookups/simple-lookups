@@ -24,11 +24,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using System.Configuration;
 using SimpleLookups.Configuration.Interfaces;
+using SimpleLookups.Databases;
+using SimpleLookups.Databases.Interfaces;
+using SimpleLookups.Exceptions;
 using System;
 using System.Collections.Generic;
-using SimpleLookups.Exceptions;
+using System.Configuration;
 
 namespace SimpleLookups.Configuration
 {
@@ -38,11 +40,13 @@ namespace SimpleLookups.Configuration
     internal class SimpleLookupsConfiguration : ISimpleLookupsConfiguration
     {
         private static readonly object LockObj = new object();
-        private Dictionary<string, string> ConnectionStrings { get; set; }
+        private IList<IConnectionInfo> ConnectionInfos { get; set; }
         
         internal SimpleLookupsConfiguration(ISimpleLookupsConfigurationSection configSection)
         {
-            ConnectionStrings = new Dictionary<string, string>();
+            ConnectionInfos = new List<IConnectionInfo>();
+
+            SetDefaultColumns();
 
             if(configSection != null)
             {
@@ -52,14 +56,30 @@ namespace SimpleLookups.Configuration
                     throw new SimpleLookupsException("More than one connection string was supplied, but there wasn't a default specified.", null);
 
                 ValidateConnectionStringExists(defaultConnectionStringSection.ConnectionStringName);
-                ConnectionStrings.Add(SimpleLookups.DefaultConnectionName,
-                                      ConfigurationManager.ConnectionStrings[defaultConnectionStringSection.ConnectionStringName].ConnectionString);
+                AddConnectionInfo(SimpleLookups.DefaultConnectionName, ConfigurationManager.ConnectionStrings[defaultConnectionStringSection.ConnectionStringName].ConnectionString);
 
                 foreach (IConnectionStringConfigurationElement c in configSection.ConnectionStrings)
                 {
                     ValidateConnectionStringExists(c.ConnectionStringName);
-                    ConnectionStrings.Add(c.ConnectionStringName, ConfigurationManager.ConnectionStrings[c.ConnectionStringName].ConnectionString);
+                    AddConnectionInfo(c.ConnectionStringName, ConfigurationManager.ConnectionStrings[c.ConnectionStringName].ConnectionString);
                 }
+
+                if (!string.IsNullOrEmpty(configSection.IdColumnSuffix))
+                    IdColumnSuffix = configSection.IdColumnSuffix.Trim();
+
+                if (!string.IsNullOrEmpty(configSection.NameColumnSuffix))
+                    NameColumnSuffix = configSection.NameColumnSuffix.Trim();
+
+                if (!string.IsNullOrEmpty(configSection.DescriptionColumnSuffix))
+                    DescriptionColumnSuffix = configSection.DescriptionColumnSuffix.Trim();
+
+                if (!string.IsNullOrEmpty(configSection.CodeColumnSuffix))
+                    CodeColumnSuffix = configSection.CodeColumnSuffix.Trim();
+
+                if (!string.IsNullOrEmpty(configSection.ActiveColumnName))
+                    ActiveColumnName = configSection.ActiveColumnName.Trim();
+
+                PrefixColumnsWithTableName = configSection.PrefixColumnsWithTableName;
 
                 SimpleLookups.IsInitialized = true;
             }
@@ -80,7 +100,7 @@ namespace SimpleLookups.Configuration
                 if (String.IsNullOrEmpty(connectionString) || connectionString.Trim() == String.Empty)
                     throw new ArgumentException("connectionString must be a valid, non-whitespace string.");
 
-                ConnectionStrings.Add(connectionName, connectionString);
+                AddConnectionInfo(connectionName, connectionString);
             }
         }
 
@@ -89,10 +109,23 @@ namespace SimpleLookups.Configuration
         /// </summary>
         /// <param name="connectionName">The name of the connection.</param>
         /// <returns>The matching connection string.</returns>
-        public string GetConnectionString(string connectionName)
+        public IConnectionInfo GetConnectionString(string connectionName)
         {
-            return ConnectionStrings[connectionName];
+            foreach (var cs in ConnectionInfos)
+            {
+                if (cs.ConnectionName == connectionName)
+                    return cs;
+            }
+
+            return null;
         }
+
+        public string IdColumnSuffix { get; set; }
+        public string NameColumnSuffix { get; set; }
+        public string DescriptionColumnSuffix { get; set; }
+        public string CodeColumnSuffix { get; set; }
+        public string ActiveColumnName { get; set; }
+        public bool PrefixColumnsWithTableName { get; set; }
 
         private static void ValidateConnectionStringExists(string connectionName)
         {
@@ -100,6 +133,23 @@ namespace SimpleLookups.Configuration
             {
                 throw new SimpleLookupsException(string.Format("Connection string named \"{0}\" was not found in the configuration file.", connectionName), null);
             }
+        }
+
+        private void AddConnectionInfo(string connectionName, string connectionString)
+        {
+            var connInfo = new ConnectionInfo(connectionName, connectionString);
+
+            ConnectionInfos.Add(connInfo);
+        }
+
+        private void SetDefaultColumns()
+        {
+            IdColumnSuffix = "Id";
+            NameColumnSuffix = "Name";
+            DescriptionColumnSuffix = "Description";
+            CodeColumnSuffix = "Code";
+            ActiveColumnName = "Active";
+            PrefixColumnsWithTableName = true;
         }
     }
 }

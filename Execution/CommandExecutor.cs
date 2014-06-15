@@ -25,12 +25,13 @@
 //
 
 using SimpleLookups.Commands.Interfaces;
+using SimpleLookups.Databases;
+using SimpleLookups.Databases.Interfaces;
 using SimpleLookups.Exceptions;
 using SimpleLookups.Execution.Interfaces;
 using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 
 namespace SimpleLookups.Execution
 {
@@ -39,33 +40,44 @@ namespace SimpleLookups.Execution
     /// </summary>
     internal class CommandExecutor : ICommandExecutor
     {
+        private readonly ILookupCommand _lookupCommand;
+
+        /// <summary>
+        /// Instantiates instance of CommandExecutor.
+        /// </summary>
+        /// <param name="lookupCommand">Command to execute in this context.</param>
+        internal CommandExecutor(ILookupCommand lookupCommand)
+        {
+            _lookupCommand = lookupCommand;
+        }
+
         /// <summary>
         /// Executes a command against the database.
         /// </summary>
-        /// <param name="command">Command to execute in this context.</param>
         /// <param name="connectionName">The name of the connection string.</param>
         /// <returns>A boolean indicating success.</returns>
-        public bool ExecuteCommand(ILookupCommand command, string connectionName)
+        public bool ExecuteCommand(string connectionName)
         {
             bool successFlg;
             DbConnection connectionToUse = null;
 
             try
             {
-                var connectionString = SimpleLookups.Configuration.GetConnectionString(connectionName);
+                var connectionInfo = SimpleLookups.Configuration.GetConnectionString(connectionName);
 
-                if (connectionString == null)
+                if (connectionInfo == null)
                     throw new ArgumentException(
                         "connectionName must be the name of a connectionString that already exists");
 
-                connectionToUse = new SqlConnection(connectionString);
+                IConnectionFactory factory = new ConnectionFactory();
+                connectionToUse = factory.GetConnection(connectionInfo);
                 connectionToUse.Open();
 
-                successFlg = command.Execute(connectionToUse);
+                successFlg = _lookupCommand.Execute(connectionToUse);
             }
             catch (Exception ex)
             {
-                throw new SimpleLookupsException(string.Format("Error occurred during {0} operation.", command.CommandName), ex);
+                throw new SimpleLookupsException(string.Format("Error occurred during {0} operation.", _lookupCommand.CommandName), ex);
             }
             finally
             {

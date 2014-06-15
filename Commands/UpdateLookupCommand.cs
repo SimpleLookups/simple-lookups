@@ -34,12 +34,13 @@ namespace SimpleLookups.Commands
 {
     internal class UpdateLookupCommand<T> : LookupCommand where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _updateStatement = new UpdateSqlStatement<T>();
+        private readonly ISqlStatement _sqlStatement;
         private readonly T _lookup;
 
         internal UpdateLookupCommand(T lookup) : base("Update")
         {
             _lookup = lookup;
+            _sqlStatement = new UpdateSqlStatement<T>();
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = _updateStatement.GetQuery();
+            command.CommandText = _sqlStatement.GetQuery();
 
             AddParameterToCommand(command, "Id", _lookup.Id, DbType.Int32);
             AddParameterToCommand(command, "Name", _lookup.Name, DbType.String);

@@ -34,7 +34,7 @@ namespace SimpleLookups.Commands
 {
     internal class SelectSingleByIdLookupCommand<T> : SelectLookupCommand<T> where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _selectByIdStatement = new SelectSingleByIdSqlStatement<T>();
+        private readonly ISqlStatement _sqlStatement;
         private readonly int _idToSelect;
 
         public T Result = null;
@@ -43,6 +43,7 @@ namespace SimpleLookups.Commands
             : base("Select")
         {
             _idToSelect = id;
+            _sqlStatement = new SelectSingleByIdSqlStatement<T>();
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = _selectByIdStatement.GetQuery();
+            command.CommandText = _sqlStatement.GetQuery();
 
             AddParameterToCommand(command, "Id", _idToSelect, DbType.Int32);
 

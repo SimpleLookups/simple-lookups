@@ -24,23 +24,24 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using SimpleLookups.Commands.SqlServer;
 using SimpleLookups.Commands.SqlServer.Interfaces;
 using SimpleLookups.Interfaces;
-using System.Data;
+using System.Collections.Generic;
 using System.Data.Common;
 
 namespace SimpleLookups.Commands
 {
-    internal class DeleteSingleByIdLookupCommand<T> : LookupCommand where T : class, ILookup, new()
+    internal abstract class SelectWithoutArgumentLookupCommand<T> : SelectLookupCommand<T> where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _sqlStatement;
-        private readonly int _idToRemove;
+        protected readonly ISqlStatement SqlStatement;
 
-        internal DeleteSingleByIdLookupCommand(int idToRemove) : base("Delete")
+        public readonly IList<T> Result;
+
+        internal SelectWithoutArgumentLookupCommand(ISqlStatement statement)
+            : base("Select")
         {
-            _idToRemove = idToRemove;
-            _sqlStatement = new DeleteSingleByIdSqlStatement<T>();
+            Result = new List<T>();
+            SqlStatement = statement;
         }
 
         /// <summary>
@@ -52,12 +53,21 @@ namespace SimpleLookups.Commands
         {
             var command = connection.CreateCommand();
 
-            command.CommandText = _sqlStatement.GetQuery();
-            AddParameterToCommand(command, "Id", _idToRemove, DbType.Int32);
+            command.CommandText = SqlStatement.GetQuery();
 
-            var affectedRows = command.ExecuteNonQuery();
+            var reader = command.ExecuteReader();
 
-            return (affectedRows > 0);
+            // Convert reader into object
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Result.Add(CreateEntityFromDataReader(reader));
+                }
+            }
+
+            reader.Close();
+            return true;
         }
     }
 }

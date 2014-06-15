@@ -70,6 +70,45 @@ namespace SimpleLookups
         }
 
         /// <summary>
+        /// Initializes SimpleLookups for use.
+        /// </summary>
+        /// <param name="defaultConnectionString">The connection string that should be used when another isn't supplied.</param>
+        /// <param name="idColumnPrefix">The suffix of the Id column. Passing a null or an empty string will cause the default value to be used.</param>
+        /// <param name="nameColumnPrefix">The suffix of the Name column. Passing a null or an empty string will cause the default value to be used.</param>
+        /// <param name="descriptionColumnPrefix">The suffix of the Description column. Passing a null or an empty string will cause the default value to be used.</param>
+        /// <param name="codeColumnPrefix">The suffix of the Code column. Passing a null or an empty string will cause the default value to be used.</param>
+        /// <param name="activeColumnName">The name of the Active column. Passing a null or an empty string will cause the default value to be used.</param>
+        /// <param name="prefixColumnNamesWithTableName">A bool indicating whether or not column names (except Active) should be prefixed with the table name.</param>
+        public static void Initialize(string defaultConnectionString, string idColumnPrefix, string nameColumnPrefix, string descriptionColumnPrefix, string codeColumnPrefix, string activeColumnName, bool prefixColumnNamesWithTableName)
+        {
+            lock (LockObj)
+            {
+                if (IsInitialized)
+                    throw new InvalidOperationException("SimpleLookups is already initialized.");
+
+                if (!string.IsNullOrEmpty(idColumnPrefix))
+                    Configuration.IdColumnSuffix = idColumnPrefix;
+
+                if (!string.IsNullOrEmpty(nameColumnPrefix))
+                    Configuration.NameColumnSuffix = nameColumnPrefix;
+
+                if (!string.IsNullOrEmpty(descriptionColumnPrefix))
+                    Configuration.DescriptionColumnSuffix = descriptionColumnPrefix;
+
+                if (!string.IsNullOrEmpty(codeColumnPrefix))
+                    Configuration.CodeColumnSuffix = codeColumnPrefix;
+
+                if (!string.IsNullOrEmpty(activeColumnName))
+                    Configuration.ActiveColumnName = activeColumnName;
+                
+                Configuration.PrefixColumnsWithTableName = prefixColumnNamesWithTableName;
+
+                Configuration.AddConnectionString(DefaultConnectionName, defaultConnectionString);
+                IsInitialized = true;
+            }
+        }
+
+        /// <summary>
         /// Adds a connection string to the internal store so that the connection string can be used later by LookupManager.
         /// </summary>
         /// <param name="connectionName">The name of the connection.</param>

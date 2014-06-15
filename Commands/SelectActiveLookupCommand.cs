@@ -25,39 +25,15 @@
 //
 
 using SimpleLookups.Commands.SqlServer;
-using SimpleLookups.Commands.SqlServer.Interfaces;
 using SimpleLookups.Interfaces;
-using System.Data;
-using System.Data.Common;
 
 namespace SimpleLookups.Commands
 {
-    internal class DeleteSingleByIdLookupCommand<T> : LookupCommand where T : class, ILookup, new()
+    internal class SelectActiveLookupCommand<T> : SelectWithoutArgumentLookupCommand<T> where T : class, ILookup, new()
     {
-        private readonly ISqlStatement _sqlStatement;
-        private readonly int _idToRemove;
-
-        internal DeleteSingleByIdLookupCommand(int idToRemove) : base("Delete")
+        internal SelectActiveLookupCommand()
+            : base(new SelectMultipleActiveSqlStatement<T>())
         {
-            _idToRemove = idToRemove;
-            _sqlStatement = new DeleteSingleByIdSqlStatement<T>();
-        }
-
-        /// <summary>
-        /// Executes the command.
-        /// </summary>
-        /// <param name="connection">The connection to execute on.</param>
-        /// <returns>A boolean indicating success.</returns>
-        public override bool Execute(DbConnection connection)
-        {
-            var command = connection.CreateCommand();
-
-            command.CommandText = _sqlStatement.GetQuery();
-            AddParameterToCommand(command, "Id", _idToRemove, DbType.Int32);
-
-            var affectedRows = command.ExecuteNonQuery();
-
-            return (affectedRows > 0);
         }
     }
 }

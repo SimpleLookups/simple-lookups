@@ -30,7 +30,7 @@ namespace SimpleLookups.Commands.SqlServer
     {
         internal DeleteSingleByCodeSqlStatement()
         {
-            QueryFormat = "DELETE FROM {0} WHERE {0}Code = @Code";
+            QueryFormat = "DELETE FROM {0} WHERE {1}[[Code]] = @Code";
         }
     }
 }

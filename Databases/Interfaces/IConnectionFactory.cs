@@ -24,40 +24,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using SimpleLookups.Commands.SqlServer;
-using SimpleLookups.Commands.SqlServer.Interfaces;
-using SimpleLookups.Interfaces;
-using System.Data;
 using System.Data.Common;
 
-namespace SimpleLookups.Commands
+namespace SimpleLookups.Databases.Interfaces
 {
-    internal class DeleteSingleByIdLookupCommand<T> : LookupCommand where T : class, ILookup, new()
+    internal interface IConnectionFactory
     {
-        private readonly ISqlStatement _sqlStatement;
-        private readonly int _idToRemove;
-
-        internal DeleteSingleByIdLookupCommand(int idToRemove) : base("Delete")
-        {
-            _idToRemove = idToRemove;
-            _sqlStatement = new DeleteSingleByIdSqlStatement<T>();
-        }
-
-        /// <summary>
-        /// Executes the command.
-        /// </summary>
-        /// <param name="connection">The connection to execute on.</param>
-        /// <returns>A boolean indicating success.</returns>
-        public override bool Execute(DbConnection connection)
-        {
-            var command = connection.CreateCommand();
-
-            command.CommandText = _sqlStatement.GetQuery();
-            AddParameterToCommand(command, "Id", _idToRemove, DbType.Int32);
-
-            var affectedRows = command.ExecuteNonQuery();
-
-            return (affectedRows > 0);
-        }
+        DbConnection GetConnection(IConnectionInfo connectionInfo);
     }
 }
