@@ -1,5 +1,5 @@
-﻿// Simple Lookups
-// Copyright (c) 2013-2014, Russell Patterson <russellpatterson@outlook.com>
+﻿// Simple Lookups 2.0
+// Copyright (c) 2013-2015, Russell Patterson <russellpatterson@outlook.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided 
@@ -11,7 +11,7 @@
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and 
 //    the following disclaimer in the documentation and/or other materials provided with the distribution.
 //
-// 3. Neither the name of Russell Patterson nor the names of other contributors may be used to endorse or
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or
 //    promote products derived from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
@@ -41,12 +41,22 @@ namespace SimpleLookups.Configuration
     {
         private static readonly object LockObj = new object();
         private IList<IConnectionInfo> ConnectionInfos { get; set; }
-        
+
+        public string IdColumnSuffix { get; set; }
+        public string NameColumnSuffix { get; set; }
+        public string DescriptionColumnSuffix { get; set; }
+        public string CodeColumnSuffix { get; set; }
+        public string ActiveColumnName { get; set; }
+        public bool PrefixColumnsWithTableName { get; set; }
+
+        public bool EnableCaching { get; set; }
+        public int CacheRefreshPeriod { get; set; }
+
         internal SimpleLookupsConfiguration(ISimpleLookupsConfigurationSection configSection)
         {
             ConnectionInfos = new List<IConnectionInfo>();
 
-            SetDefaultColumns();
+            SetDefaults();
 
             if(configSection != null)
             {
@@ -80,6 +90,8 @@ namespace SimpleLookups.Configuration
                     ActiveColumnName = configSection.ActiveColumnName.Trim();
 
                 PrefixColumnsWithTableName = configSection.PrefixColumnsWithTableName;
+                EnableCaching = configSection.EnableCaching;
+                CacheRefreshPeriod = configSection.CacheRefreshPeriod;
 
                 SimpleLookups.IsInitialized = true;
             }
@@ -120,13 +132,6 @@ namespace SimpleLookups.Configuration
             return null;
         }
 
-        public string IdColumnSuffix { get; set; }
-        public string NameColumnSuffix { get; set; }
-        public string DescriptionColumnSuffix { get; set; }
-        public string CodeColumnSuffix { get; set; }
-        public string ActiveColumnName { get; set; }
-        public bool PrefixColumnsWithTableName { get; set; }
-
         private static void ValidateConnectionStringExists(string connectionName)
         {
             if (ConfigurationManager.ConnectionStrings[connectionName] == null)
@@ -142,14 +147,17 @@ namespace SimpleLookups.Configuration
             ConnectionInfos.Add(connInfo);
         }
 
-        private void SetDefaultColumns()
+        private void SetDefaults()
         {
-            IdColumnSuffix = "Id";
-            NameColumnSuffix = "Name";
-            DescriptionColumnSuffix = "Description";
-            CodeColumnSuffix = "Code";
-            ActiveColumnName = "Active";
-            PrefixColumnsWithTableName = true;
+            IdColumnSuffix = Defaults.IdColumnSuffix;
+            NameColumnSuffix = Defaults.NameColumnSuffix;
+            DescriptionColumnSuffix = Defaults.DescriptionColumnSuffix;
+            CodeColumnSuffix = Defaults.CodeColumnSuffix;
+            ActiveColumnName = Defaults.ActiveColumnName;
+            PrefixColumnsWithTableName = Defaults.PrefixColumnsWithTableName;
+
+            EnableCaching = Defaults.EnableCaching;
+            CacheRefreshPeriod = Defaults.CacheRefreshPeriod;
         }
     }
 }

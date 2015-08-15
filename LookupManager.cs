@@ -1,5 +1,5 @@
-﻿// Simple Lookups
-// Copyright (c) 2013-2014, Russell Patterson <russellpatterson@outlook.com>
+﻿// Simple Lookups 2.0
+// Copyright (c) 2013-2015, Russell Patterson <russellpatterson@outlook.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided 
@@ -11,7 +11,7 @@
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and 
 //    the following disclaimer in the documentation and/or other materials provided with the distribution.
 //
-// 3. Neither the name of Russell Patterson nor the names of other contributors may be used to endorse or
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or 
 //    promote products derived from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
@@ -24,10 +24,11 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-using SimpleLookups.Commands;
-using SimpleLookups.Commands.Interfaces;
-using SimpleLookups.Execution;
 using SimpleLookups.Interfaces;
+using SimpleLookups.Mutators;
+using SimpleLookups.Mutators.Interfaces;
+using SimpleLookups.Retrievers;
+using SimpleLookups.Retrievers.Interfaces;
 using System.Collections.Generic;
 
 namespace SimpleLookups
@@ -37,7 +38,24 @@ namespace SimpleLookups
     /// </summary>
     /// <typeparam name="T">Any class object that inherits from ILookup.</typeparam>
     public class LookupManager<T> : ILookupManager<T> where T : class, ILookup, new()
-    {
+    {        
+		private readonly ILookupRetriever<T> _lookupRetriever;
+        private readonly ILookupMutator<T> _lookupMutator;
+
+        /// <summary>
+        /// Creates a LookupManager for a given ILookup type
+        /// </summary>
+        public LookupManager()
+        {
+            _lookupRetriever = new DbLookupRetriever<T>();
+            _lookupMutator = new DbLookupMutator<T>();
+
+            if (SimpleLookups.Configuration.EnableCaching)
+            {
+                _lookupRetriever = new CacheLookupRetriever<T>(_lookupRetriever);
+            }
+        }
+		
         /// <summary>
         /// Creates a lookup value.
         /// </summary>
@@ -56,9 +74,7 @@ namespace SimpleLookups
         /// <returns>A boolean value indicating whether the operation was a success.</returns>
         public bool Create(T lookup, string connectionName)
         {
-            var command = new InsertLookupCommand<T>(lookup);
-
-            return ExecuteCommand(command, connectionName);
+            return _lookupMutator.Create(lookup, connectionName);
         }
 
         /// <summary>
@@ -79,9 +95,7 @@ namespace SimpleLookups
         /// <returns>A boolean value indicating whether the operation was a success.</returns>
         public bool Update(T lookup, string connectionName)
         {
-            var command = new UpdateLookupCommand<T>(lookup);
-
-            return ExecuteCommand(command, connectionName);
+            return _lookupMutator.Update(lookup, connectionName);
         }
         
         /// <summary>
@@ -102,9 +116,7 @@ namespace SimpleLookups
         /// <returns>A boolean value indicating whether the operation was a success.</returns>
         public bool Delete(int id, string connectionName)
         {
-            var command = new DeleteSingleByIdLookupCommand<T>(id);
-
-            return ExecuteCommand(command, connectionName);
+            return _lookupMutator.Delete(id, connectionName);
         }
         
         /// <summary>
@@ -125,9 +137,7 @@ namespace SimpleLookups
         /// <returns>A boolean value indicating whether the operation was a success.</returns>
         public bool Delete(IList<int> ids, string connectionName)
         {
-            var command = new DeleteMultipleByIdLookupCommand<T>(ids);
-
-            return ExecuteCommand(command, connectionName);
+            return _lookupMutator.Delete(ids, connectionName);
         }
 
         /// <summary>
@@ -148,9 +158,7 @@ namespace SimpleLookups
         /// <returns>A boolean value indicating whether the operation was a success.</returns>
         public bool Delete(string code, string connectionName)
         {
-            var command = new DeleteSingleByCodeLookupCommand<T>(code);
-
-            return ExecuteCommand(command, connectionName);
+            return _lookupMutator.Delete(code, connectionName);
         }
 
         /// <summary>
@@ -171,9 +179,7 @@ namespace SimpleLookups
         /// <returns>A boolean value indicating whether the operation was a success.</returns>
         public bool Delete(IList<string> codes, string connectionName)
         {
-            var command = new DeleteMultipleByCodeLookupCommand<T>(codes);
-
-            return ExecuteCommand(command, connectionName);
+            return _lookupMutator.Delete(codes, connectionName);
         }
 
         /// <summary>
@@ -194,11 +200,7 @@ namespace SimpleLookups
         /// <returns>The requested lookup value.</returns>
         public T Get(int id, string connectionName)
         {
-            var command = new SelectSingleByIdLookupCommand<T>(id);
-
-            ExecuteCommand(command, connectionName);
-
-            return command.Result;
+            return _lookupRetriever.Get(id, connectionName);
         }
 
         /// <summary>
@@ -219,11 +221,7 @@ namespace SimpleLookups
         /// <returns>A list of the requested lookup values.</returns>
         public IList<T> Get(IList<int> ids, string connectionName)
         {
-            var command = new SelectMultipleByIdLookupCommand<T>(ids);
-
-            ExecuteCommand(command, connectionName);
-
-            return command.Result;
+            return _lookupRetriever.Get(ids, connectionName);
         }
         
         /// <summary>
@@ -244,11 +242,7 @@ namespace SimpleLookups
         /// <returns>The requested lookup value.</returns>
         public T Get(string code, string connectionName)
         {
-            var command = new SelectSingleByCodeLookupCommand<T>(code);
-
-            ExecuteCommand(command, connectionName);
-
-            return command.Result;
+            return _lookupRetriever.Get(code, connectionName);
         }
 
         /// <summary>
@@ -269,11 +263,7 @@ namespace SimpleLookups
         /// <returns>A list of the requested lookup values.</returns>
         public IList<T> Get(IList<string> codes, string connectionName)
         {
-            var command = new SelectMultipleByCodeLookupCommand<T>(codes);
-
-            ExecuteCommand(command, connectionName);
-
-            return command.Result;
+            return _lookupRetriever.Get(codes, connectionName);
         }
 
         /// <summary>
@@ -294,18 +284,7 @@ namespace SimpleLookups
         /// <returns>A list of the requested lookup values.</returns>
         public IList<T> Get(bool activeOnly, string connectionName)
         {
-            var command = activeOnly ? (SelectWithoutArgumentLookupCommand<T>)new SelectActiveLookupCommand<T>() : new SelectAllLookupCommand<T>();
-
-            ExecuteCommand(command, connectionName);
-
-            return command.Result;
-        }
-
-        private bool ExecuteCommand(ILookupCommand command, string connectionName)
-        {
-            var commandExecutor = new CommandExecutor(command);
-
-            return commandExecutor.ExecuteCommand(connectionName);
+            return _lookupRetriever.Get(activeOnly, connectionName);
         }
     }
 }

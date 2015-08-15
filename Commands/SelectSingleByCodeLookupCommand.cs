@@ -1,5 +1,5 @@
-﻿// Simple Lookups
-// Copyright (c) 2013-2014, Russell Patterson <russellpatterson@outlook.com>
+﻿// Simple Lookups 2.0
+// Copyright (c) 2013-2015, Russell Patterson <russellpatterson@outlook.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided 
@@ -11,7 +11,7 @@
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and 
 //    the following disclaimer in the documentation and/or other materials provided with the distribution.
 //
-// 3. Neither the name of Russell Patterson nor the names of other contributors may be used to endorse or
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or
 //    promote products derived from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
@@ -25,10 +25,10 @@
 //
 
 using SimpleLookups.Commands.SqlServer;
-using SimpleLookups.Commands.SqlServer.Interfaces;
 using SimpleLookups.Interfaces;
 using System.Data;
 using System.Data.Common;
+using SimpleLookups.Commands.Interfaces;
 
 namespace SimpleLookups.Commands
 {
@@ -37,7 +37,7 @@ namespace SimpleLookups.Commands
         private readonly ISqlStatement _sqlStatement;
         private readonly string _codeToSelect;
 
-        public T Result = null;
+        public T Result;
 
         internal SelectSingleByCodeLookupCommand(string code)
             : base("Select")

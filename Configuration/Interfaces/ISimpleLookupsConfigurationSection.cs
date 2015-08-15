@@ -1,5 +1,5 @@
-﻿// Simple Lookups
-// Copyright (c) 2013-2014, Russell Patterson <russellpatterson@outlook.com>
+﻿// Simple Lookups 2.0
+// Copyright (c) 2013-2015, Russell Patterson <russellpatterson@outlook.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided 
@@ -11,7 +11,7 @@
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and 
 //    the following disclaimer in the documentation and/or other materials provided with the distribution.
 //
-// 3. Neither the name of Russell Patterson nor the names of other contributors may be used to endorse or
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or
 //    promote products derived from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
@@ -23,8 +23,6 @@
 // NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 // POSSIBILITY OF SUCH DAMAGE.
 //
-
-using System.Configuration;
 
 namespace SimpleLookups.Configuration.Interfaces
 {
@@ -62,6 +60,16 @@ namespace SimpleLookups.Configuration.Interfaces
         /// A bool indicating whether the column names will be prefixed with the table name. (not including Active column)
         /// </summary>
         bool PrefixColumnsWithTableName { get; set; }
+
+        /// <summary>
+        /// A bool indicating whether caching is enabled.
+        /// </summary>   
+        bool EnableCaching { get; set; }
+
+        /// <summary>
+        /// Number of seconds before cache information is refreshed.
+        /// </summary>
+        int CacheRefreshPeriod { get; set; }
         
         /// <summary>
         /// Collection of connection strings.

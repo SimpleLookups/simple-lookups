@@ -1,5 +1,5 @@
-﻿// Simple Lookups
-// Copyright (c) 2013-2014, Russell Patterson <russellpatterson@outlook.com>
+﻿// Simple Lookups 2.0
+// Copyright (c) 2013-2015, Russell Patterson <russellpatterson@outlook.com>
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided 
@@ -11,7 +11,7 @@
 // 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and 
 //    the following disclaimer in the documentation and/or other materials provided with the distribution.
 //
-// 3. Neither the name of Russell Patterson nor the names of other contributors may be used to endorse or
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or
 //    promote products derived from this software without specific prior written permission.
 //
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
@@ -24,8 +24,8 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
+using SimpleLookups.Commands.Interfaces;
 using SimpleLookups.Commands.SqlServer;
-using SimpleLookups.Commands.SqlServer.Interfaces;
 using SimpleLookups.Interfaces;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -37,14 +37,12 @@ namespace SimpleLookups.Commands
         private readonly ISqlStatement _sqlStatement;
         private readonly IList<int> _idsToSelect;
 
-        public readonly IList<T> Result;
+        public readonly IList<T> Result = new List<T>();
 
         internal SelectMultipleByIdLookupCommand(IList<int> ids)
             : base("Select")
         {
             _idsToSelect = ids;
-            Result = new List<T>();
-
             _sqlStatement = new SelectMultipleByIdSqlStatement<T>();
         }
 
@@ -59,7 +57,7 @@ namespace SimpleLookups.Commands
 
             command.CommandText = string.Format(_sqlStatement.GetQuery(),
                                                 GenerateCsvParameterNameString(_idsToSelect.Count, "Id"));
-
+            
             AddIdParameterValues(command, _idsToSelect);
 
             var reader = command.ExecuteReader();
