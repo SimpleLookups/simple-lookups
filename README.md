@@ -1,4 +1,4 @@
-simple-lookups
+SimpleLookups
 ==============
 
-Public location for Simple Lookups source code.
+Public mirror for Simple Lookups source code.
