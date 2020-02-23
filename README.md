@@ -16,8 +16,11 @@ For more information, see the website [simplelookups.com](simplelookups.com).
 
 Feature request?
 ---
-Do you have a feature request? Send an email to [russell@russellwritescode.com](mailto:russell@russellwritescode.com).
+Do you have a feature request? Send an email to support@simplelookups.com.
 
+Running The Tests
+---
+If you want to run the tests on your machine, take a look at the README in the _TestEnvSetup folder.
 
 Contributing
 ---
