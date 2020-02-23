@@ -11,7 +11,7 @@ All you have to do is create a class called ProviderType that inherits from Simp
 
 SimpleLookups will also cache lookup values in memory so that you can save database hits and get values very quickly.
 
-For more information, see the website [simplelookups.com](simplelookups.com).
+For more information, see the website [simplelookups.com](https://www.simplelookups.com).
 
 
 Feature request?
